@@ -15,7 +15,7 @@ task verificarLinha(){
 }
 task procurarInimigo(){
   while(true){
-    if (SensorValue(S3)<50){
+    if (SensorValue(S2)<50){
       motor[motorA] = 50;
       motor[motorB] = 50;
     }
@@ -27,13 +27,38 @@ task procurarInimigo(){
     wait1Msec(100);
   }
 }
+task toque(){
+  while(true)
+   {
+     if(SensorValue(S2) == 1){
+         motor[motorA] = 100;
+         motor[motorB] = 100;
+         motor[motorC] = 100;
+     }
+      while (SensorValue(S2) == 1)
+      {
+         if (time10(T1)>500)
+         {
+            StopTask(lookForLine);
+            StopTask(searchForOpponent);
+            motor[left] = -50;
+            motor[right] = -50;
+            wait10Msec(10);
+            StartTask(lookForLine);
+            StartTask(searchForOpponent);
+            ClearTimer(T1);
+         }
+       }
+         wait1Msec(10);
+      }
+}
 
 task main(){
     nMotorEncoderTarget[motorB] = 7;
 	  while(true){
 	    StartTask(verificarLinha);
 	    StartTask(procurarInimigo);
-	    StartTask(touchTimer);
+	    StartTask(toque);
 	    wait1Msec(10);
 	  }
   }
